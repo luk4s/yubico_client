@@ -5,11 +5,10 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby-version: [ 2.6.x, 2.7.x, 3.0.x ]
+        ruby-version: [ 2.6.3, 2.7.2, 3.0.2 ]
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      # https://github.com/marketplace/actions/setup-ruby-jruby-and-truffleruby
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:

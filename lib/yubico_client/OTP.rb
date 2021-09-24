@@ -1,10 +1,13 @@
+# frozen_string_literal: true
+
 require "base64"
+require "net/http"
+require "openssl"
 
 module YubicoClient
   # Verify OTP against Yubico Cloud
   # @see https://developers.yubico.com/yubikey-val/Getting_Started_Writing_Clients.html
   class OTP
-
     # @param (see #initialize)
     def self.valid?(*args)
       client = new(*args)
@@ -41,7 +44,7 @@ module YubicoClient
     end
 
     def request_signature
-      hmac = OpenSSL::HMAC.digest('sha1', Base64.decode64(@secret), query_params.join("&").strip)
+      hmac = OpenSSL::HMAC.digest("sha1", Base64.decode64(@secret), query_params.join("&").strip)
       Base64.encode64(hmac).strip
     end
 
@@ -50,22 +53,30 @@ module YubicoClient
     def response_data
       return @response_data if @response_data
 
-      uri = URI('https://api.yubico.com/wsapi/2.0/verify')
+      uri = URI("https://api.yubico.com/wsapi/2.0/verify")
       uri.query = URI.encode_www_form(params.merge("h" => request_signature))
 
       response = Net::HTTP.get_response(uri)
       raise Error, response unless response.is_a?(Net::HTTPSuccess)
 
-      @response_data = response.body.split(" ").each_with_object({}) { |i, obj| m = i.match(/^(\w+)=(.*)/); obj.store(m[1], m[2].strip) }
+      @response_data = parse_response(response)
     end
 
     def valid?
       data = response_data
       signature = data.delete("h")
       response_string = data.map { |k, v| "#{k}=#{v}" }.sort.join("&")
-      hmac = OpenSSL::HMAC.digest('sha1', Base64.decode64(@secret.strip), response_string)
+      hmac = OpenSSL::HMAC.digest("sha1", Base64.decode64(@secret.strip), response_string)
       signature == Base64.encode64(hmac).strip
     end
 
+    private
+
+    def parse_response(response)
+      response.body.split.each_with_object({}) do |i, obj|
+        m = i.match(/^(\w+)=(.*)/)
+        obj.store(m[1], m[2].strip)
+      end
+    end
   end
 end

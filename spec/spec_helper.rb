@@ -1,7 +1,9 @@
 # frozen_string_literal: true
+
 require "webmock/rspec"
 
 require "simplecov"
+SimpleCov.start
 require "yubico_client"
 
 RSpec.configure do |config|
