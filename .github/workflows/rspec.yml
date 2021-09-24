@@ -1,0 +1,18 @@
+name: RSpec tests
+on: [push]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ruby-version: [ 2.6.x, 2.7.x, 3.0.x ]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      # https://github.com/marketplace/actions/setup-ruby-jruby-and-truffleruby
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby-version }}
+      - run: bundle install
+      - run: bundle exec rspec

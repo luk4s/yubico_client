@@ -1,8 +1,17 @@
 # YubicoClient
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/yubico_client`. To experiment with that code, run `bin/console` for an interactive prompt.
+Ruby client library for YubiKey.
 
-TODO: Delete this and the text above, and describe your gem
+## OTP
+
+Verify Yubico OTPs with YubiCloud. This works as a library for https://developers.yubico.com/OTP/Libraries/Using_a_library.html
+
+The most simple way is to use `.valid?` shortcut - it just verify OTP
+```ruby
+YubicoClient::OTP.valid?("vvvvvvcurikvhjcvnlnbecbkubjvuittbifhndhn", client_id: "12345", secret: "c2VjcmV0Cg=") # => true / false
+```
+
+`client_id` and `secret` is required and should be obtained from https://upgrade.yubico.com/getapikey/
 
 ## Installation
 
@@ -16,13 +25,14 @@ And then execute:
 
     $ bundle install
 
+Or:
+
+    $ bundle add yubico_client
+
 Or install it yourself as:
 
     $ gem install yubico_client
 
-## Usage
-
-TODO: Write usage instructions here
 
 ## Development
 
@@ -32,7 +42,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/yubico_client. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/[USERNAME]/yubico_client/blob/master/CODE_OF_CONDUCT.md).
+Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/yubico_client. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/luk4s/yubico_client/blob/master/CODE_OF_CONDUCT.md).
 
 ## License
 
@@ -40,4 +50,4 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Code of Conduct
 
-Everyone interacting in the YubicoClient project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/yubico_client/blob/master/CODE_OF_CONDUCT.md).
+Everyone interacting in the YubicoClient project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/luk4s/yubico_client/blob/master/CODE_OF_CONDUCT.md).

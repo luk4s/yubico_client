@@ -1,12 +1,9 @@
 require "base64"
-require "rest-client"
 
 module YubicoClient
   # Verify OTP against Yubico Cloud
   # @see https://developers.yubico.com/yubikey-val/Getting_Started_Writing_Clients.html
   class OTP
-
-
 
     # @param (see #initialize)
     def self.valid?(*args)
@@ -53,7 +50,12 @@ module YubicoClient
     def response_data
       return @response_data if @response_data
 
-      response = RestClient.get "https://api.yubico.com/wsapi/2.0/verify", params: params.merge("h" => request_signature)
+      uri = URI('https://api.yubico.com/wsapi/2.0/verify')
+      uri.query = URI.encode_www_form(params.merge("h" => request_signature))
+
+      response = Net::HTTP.get_response(uri)
+      raise Error, response unless response.is_a?(Net::HTTPSuccess)
+
       @response_data = response.body.split(" ").each_with_object({}) { |i, obj| m = i.match(/^(\w+)=(.*)/); obj.store(m[1], m[2].strip) }
     end
 
